@@ -90,7 +90,7 @@ bot.start(async(ctx) => {
 
                 if ((parseInt(ctx.from.id) === parseInt(process.env.admin_J) || parseInt(ctx.from.id) === parseInt(process.env.admin_G)) && key === 'admin') {
                     ctx.telegram.sendMessage(process.env.chatID, ctx.message.text)
-                    ctx.reply('E`lon yuborildi!')
+                    await ctx.reply('E`lon yuborildi!')
                     ctx.reply('E`lonlar tugagan bo`lsa bosh menuga o`ting  ?', Markup.inlineKeyboard([
                         [Markup.button.callback('Bosh menu', 'bosh_menu')]
                     ]))
@@ -206,6 +206,7 @@ bot.start(async(ctx) => {
 
         })
         bot.action('bosh_menu', async ctx => {
+            key = process.env.client_key
 
             ctx.reply('Tanlang!', Markup.inlineKeyboard([
                 [Markup.button.callback('admin', 'admin'), Markup.button.callback('client', 'client')]
