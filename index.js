@@ -44,11 +44,11 @@ const bot = new Telegraf(process.env.BOT_TOKEN)
 
 
 
-const job = new CronJob('00 18 * * *', async() => {
+const job = new CronJob('29 16 * * *', async() => {
     const photourl = await PhotoUrl.findById('61b5a7464f12aeb80d5ee100')
     photo = photourl.url
 
-    let str = '🕰 Namoz vaqtlari!  ' + date.getDate() + 1 + ' - ' + month[date.getMonth()] + '  ' + date.getFullYear() + ' yil'
+    let str = '🕰 Namoz vaqtlari!  ' + date.getDate() + ' - ' + month[date.getMonth()] + '  ' + date.getFullYear() + ' yil'
     await bot.telegram.sendPhoto(process.env.chatID, photo)
     await bot.telegram.sendMessage(process.env.chatID, str)
 }, null, true)
@@ -70,6 +70,7 @@ bot.command('/start@Qalandarxona_bot', async(ctx) => {
 )
 
 bot.start(async(ctx) => {
+    ctx.telegram.sendMessage('532904219', 'Soat:  ' + date.getHours() + '-' + date.getMinutes() + 'kun : ' + date.getDay())
     if (parseInt(ctx.from.id) === parseInt(process.env.admin_J) || parseInt(ctx.from.id) === parseInt(process.env.admin_G)) {
         ctx.reply('Tanlang!', Markup.inlineKeyboard([
             [Markup.button.callback('admin', 'admin'), Markup.button.callback('client', 'client')]
@@ -85,9 +86,11 @@ bot.start(async(ctx) => {
 
 
 
-            ctx.reply('E`lonni yoki namoz vaqtlarini yuboring!')
+            ctx.reply('E`lonni yoki namoz vaqtlarini yuboring!', Markup.inlineKeyboard([
+                [Markup.button.callback('Bosh menu', 'bosh_menu')]
+            ]))
             bot.on('text', async ctx => {
-
+                console.log(key)
                 if ((parseInt(ctx.from.id) === parseInt(process.env.admin_J) || parseInt(ctx.from.id) === parseInt(process.env.admin_G)) && key === 'admin') {
                     ctx.telegram.sendMessage(process.env.chatID, ctx.message.text)
                     await ctx.reply('E`lon yuborildi!')
@@ -115,6 +118,7 @@ bot.start(async(ctx) => {
 
                         let th = ''
                         switch (ctx.message.text) {
+
                             case 'Namoz vaqtlarini qayta yuklash':
                                 await bot.telegram.sendPhoto(ctx.from.id, photo)
                                 await bot.telegram.sendMessage(ctx.from.id, str);
@@ -195,7 +199,9 @@ bot.start(async(ctx) => {
                 ctx.telegram.sendPhoto(process.env.chatID, photo)
                 ctx.telegram.sendMessage(process.env.chatID, str)
 
-                ctx.reply('Namoz vaqti bot foydalanuvchilariga yuborildi!')
+                ctx.reply('Namoz vaqti bot foydalanuvchilariga yuborildi!', Markup.inlineKeyboard([
+                    [Markup.button.callback('Bosh menu', 'bosh_menu')]
+                ]))
 
 
 
@@ -203,6 +209,11 @@ bot.start(async(ctx) => {
 
             })
 
+            bot.action('photoNosend', async ctx => {
+                ctx.reply('E`lonni yoki namoz vaqtlarini yuboring!', Markup.inlineKeyboard([
+                    [Markup.button.callback('Bosh menu', 'bosh_menu')]
+                ]))
+            })
 
         })
         bot.action('bosh_menu', async ctx => {
@@ -251,25 +262,28 @@ bot.start(async(ctx) => {
                 photo = photourl.url
                 let str = '🕓 Namoz vaqtlari!  ' + date.getDate() + ' - ' + month[date.getMonth()] + '  ' + date.getFullYear() + ' yil \n Payshanba vaqti bilan'
                 await ctx.telegram.sendPhoto(ctx.from.id, photo)
+                if (key === 'client') {
+                    ctx.telegram.sendMessage(ctx.from.id, str, {
+                        reply_markup: {
+                            keyboard: [
+                                ['Namoz vaqtlarini qayta yuklash'],
 
-                ctx.telegram.sendMessage(ctx.from.id, str, {
-                    reply_markup: {
-                        keyboard: [
-                            ['Namoz vaqtlarini qayta yuklash'],
-
-                            ['Statistika', 'Barcha botlar ro`yxati'],
-                            ['Botni to`xtatish', 'Botni qayta ishga tushirish'],
-                            ['Qalandarxona telegram guruhiga o`tish']
+                                ['Statistika', 'Barcha botlar ro`yxati'],
+                                ['Botni to`xtatish', 'Botni qayta ishga tushirish'],
+                                ['Qalandarxona telegram guruhiga o`tish']
 
 
-                        ]
-                    }
-                })
+                            ]
+                        }
+                    })
+                }
+
                 let i = 0
                 bot.on('message', async ctx => {
                     if (key === 'client') {
                         let th = ''
                         switch (ctx.message.text) {
+
                             case 'Namoz vaqtlarini qayta yuklash':
                                 await bot.telegram.sendPhoto(ctx.from.id, photo)
                                 await bot.telegram.sendMessage(ctx.from.id, str);
@@ -385,6 +399,7 @@ bot.start(async(ctx) => {
 
             let th = ''
             switch (ctx.message.text) {
+
                 case 'Namoz vaqtlarini qayta yuklash':
                     await bot.telegram.sendPhoto(ctx.from.id, photo)
                     await bot.telegram.sendMessage(ctx.from.id, str);
