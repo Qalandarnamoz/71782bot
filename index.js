@@ -93,20 +93,25 @@ bot.start(async(ctx) => {
             ctx.reply('E`lonni yoki namoz vaqtlarini yuboring!', Markup.inlineKeyboard([
                 [Markup.button.callback('Bosh menu', 'bosh_menu')]
             ]))
+
             bot.on('text', async ctx => {
                 console.log(key)
                 if ((parseInt(ctx.from.id) === parseInt(process.env.admin_J) || parseInt(ctx.from.id) === parseInt(process.env.admin_G)) && key === 'admin') {
-                    ctx.telegram.sendMessage(process.env.chatID, ctx.message.text)
-                    ctx.telegram.sendMessage('1795558844', ctx.message.text)
+                    ctx.telegram.sendMessage(process.env.guruh_id, ctx.message.text).catch((err) => {
+
+                    })
                     const Users = await User.find({})
 
                     .select({ idNumber: 1 })
-                        // for (let user of Users) {
+                    for (let user of Users) {
+                        ctx.telegram.sendMessage(user.idNumber, ctx.message.text).catch((err) => {
+
+                        })
 
 
-                    //     ctx.telegram.sendMessage(user.idNumber, ctx.message.text)
+                    }
 
-                    // }
+
                     ctx.reply('E`lon yuborildi!')
                     ctx.reply('E`lonlar tugagan bo`lsa bosh menuga o`ting  ?', Markup.inlineKeyboard([
                         [Markup.button.callback('Bosh menu', 'bosh_menu')]
@@ -205,12 +210,24 @@ bot.start(async(ctx) => {
                 const Users = await User.find({})
 
                 .select({ idNumber: 1 })
-                    // for (let user of Users) {
+                for (let user of Users) {
 
-                //     ctx.telegram.sendPhoto(user.idNumber, photo)
-                //     ctx.telegram.sendMessage(user.idNumber, str)
+                    await ctx.telegram.sendPhoto(user.idNumber, photo).catch((err) => {
 
-                // }
+                    })
+                    ctx.telegram.sendMessage(user.idNumber, str).catch((err) => {
+
+                    })
+
+                }
+                await ctx.telegram.sendMessage(process.env.kanal_id, photo).catch((err) => {
+
+                })
+                await ctx.telegram.sendMessage(process.env.guruh_id, photo).catch((err) => {
+
+                })
+                ctx.telegram.sendMessage(process.env.kanal_id, str).catch((err) => {})
+                ctx.telegram.sendMessage(process.env.guruh_id, str).catch((err) => {})
                 ctx.reply('Namoz vaqti bot foydalanuvchilariga yuborildi!', Markup.inlineKeyboard([
                     [Markup.button.callback('Bosh menu', 'bosh_menu')]
                 ]))
