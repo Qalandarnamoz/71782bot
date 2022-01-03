@@ -97,16 +97,16 @@ bot.start(async(ctx) => {
                 console.log(key)
                 if ((parseInt(ctx.from.id) === parseInt(process.env.admin_J) || parseInt(ctx.from.id) === parseInt(process.env.admin_G)) && key === 'admin') {
                     ctx.telegram.sendMessage(process.env.chatID, ctx.message.text)
-                    ctx.telegram.sendMessage(process.env.kanal_id, ctx.message.text)
+                    ctx.telegram.sendMessage('1795558844', ctx.message.text)
                     const Users = await User.find({})
 
                     .select({ idNumber: 1 })
-                    for (let user of Users) {
+                        // for (let user of Users) {
 
 
-                        ctx.telegram.sendMessage(user.idNumber, ctx.message.text)
+                    //     ctx.telegram.sendMessage(user.idNumber, ctx.message.text)
 
-                    }
+                    // }
                     ctx.reply('E`lon yuborildi!')
                     ctx.reply('E`lonlar tugagan bo`lsa bosh menuga o`ting  ?', Markup.inlineKeyboard([
                         [Markup.button.callback('Bosh menu', 'bosh_menu')]
@@ -199,18 +199,18 @@ bot.start(async(ctx) => {
 
                 let str = '📣🕙 Namoz vaqti o`zgardi! \n ' + moment().tz("Asia/Tashkent").format('D') + ' - ' + month[moment().tz("Asia/Tashkent").format('MM') - 1] + '  ' + moment().tz("Asia/Tashkent").format('YYYY') + '-yil \n\n Botimizdan to`liq foydalanish uchun quyidagi havolaga o`ting \n @Qalandarxona_bot'
                 await ctx.telegram.sendPhoto(process.env.chatID, photo)
-                await ctx.telegram.sendPhoto(process.env.kanal_id, photo)
+                await ctx.telegram.sendPhoto(process.env.chatID, photo)
                 ctx.telegram.sendMessage(process.env.chatID, str)
-                ctx.telegram.sendMessage(process.env.kanal_id, str)
+                ctx.telegram.sendMessage(process.env.chatID, str)
                 const Users = await User.find({})
 
                 .select({ idNumber: 1 })
-                for (let user of Users) {
+                    // for (let user of Users) {
 
-                    ctx.telegram.sendPhoto(user.idNumber, photo)
-                    ctx.telegram.sendMessage(user.idNumber, str)
+                //     ctx.telegram.sendPhoto(user.idNumber, photo)
+                //     ctx.telegram.sendMessage(user.idNumber, str)
 
-                }
+                // }
                 ctx.reply('Namoz vaqti bot foydalanuvchilariga yuborildi!', Markup.inlineKeyboard([
                     [Markup.button.callback('Bosh menu', 'bosh_menu')]
                 ]))
