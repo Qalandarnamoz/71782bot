@@ -6,7 +6,7 @@ let elon = false
 let key = ''
 const date = new Date()
 const CronJob = require('cron').CronJob
-
+const moment = require('moment-timezone');
 
 
 const month = ['Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun', 'Iyul', 'Avgust', 'Sentyabr', 'Oktyabr', 'Noyabr', 'Dekabr']
@@ -44,17 +44,20 @@ const bot = new Telegraf(process.env.BOT_TOKEN)
 
 
 
-const job = new CronJob('29 16 * * *', async() => {
+console.log(moment().tz("Asia/Tashkent").format('YYYY'))
+
+
+const job = new CronJob('00 13 * * *', async() => {
     const photourl = await PhotoUrl.findById('61b5a7464f12aeb80d5ee100')
     photo = photourl.url
 
-    let str = '🕰 Namoz vaqtlari!  ' + date.getDate() + ' - ' + month[date.getMonth()] + '  ' + date.getFullYear() + ' yil'
+    let str = '🕰 Namoz vaqtlari!  ' + moment().tz("Asia/Tashkent").format('D') + ' - ' + month[moment().tz("Asia/Tashkent").format('MM') - 1] + '  ' + moment().tz("Asia/Tashkent").format('YYYY') + '-yil \n\n Botimizdan to`liq foydalanish uchun quyidagi havolaga kiring \n @Qalandarxona_bot '
     await bot.telegram.sendPhoto(process.env.chatID, photo)
     await bot.telegram.sendMessage(process.env.chatID, str)
 }, null, true)
 job.start()
 
-const time = new CronJob('59 23 * * *', async() => {
+const time = new CronJob('00 19 * * *', async() => {
     const Layks = await Layk.findById('61b5737108dd84ef1697f680')
     Layks.layk = Layks.layk + 1
     await Layks.save()
@@ -70,8 +73,9 @@ bot.command('/start@Qalandarxona_bot', async(ctx) => {
 )
 
 bot.start(async(ctx) => {
-    ctx.telegram.sendMessage('532904219', 'Soat:  ' + date.getHours() + '-' + date.getMinutes() + 'kun : ' + date.getDay())
+
     if (parseInt(ctx.from.id) === parseInt(process.env.admin_J) || parseInt(ctx.from.id) === parseInt(process.env.admin_G)) {
+        await ctx.reply(`Assalomu alaykum ! ${ctx.from.first_name}`, { reply_markup: { remove_keyboard: true } })
         ctx.reply('Tanlang!', Markup.inlineKeyboard([
             [Markup.button.callback('admin', 'admin'), Markup.button.callback('client', 'client')]
         ]))
@@ -93,24 +97,25 @@ bot.start(async(ctx) => {
                 console.log(key)
                 if ((parseInt(ctx.from.id) === parseInt(process.env.admin_J) || parseInt(ctx.from.id) === parseInt(process.env.admin_G)) && key === 'admin') {
                     ctx.telegram.sendMessage(process.env.chatID, ctx.message.text)
-                    await ctx.reply('E`lon yuborildi!')
+                    ctx.telegram.sendMessage(process.env.kanal_id, ctx.message.text)
+                    const Users = await User.find({})
+
+                    .select({ idNumber: 1 })
+                    for (let user of Users) {
+
+
+                        ctx.telegram.sendMessage(user.idNumber, ctx.message.text)
+
+                    }
+                    ctx.reply('E`lon yuborildi!')
                     ctx.reply('E`lonlar tugagan bo`lsa bosh menuga o`ting  ?', Markup.inlineKeyboard([
                         [Markup.button.callback('Bosh menu', 'bosh_menu')]
                     ]))
                 } else {
                     if (key === 'client') {
-
-
-
-
-
-
-
-
                         const photourl = await PhotoUrl.findById('61b5a7464f12aeb80d5ee100')
                         photo = photourl.url
-                        let str = '🕓 Namoz vaqtlari!  ' + date.getDate() + ' - ' + month[date.getMonth()] + '  ' + date.getFullYear() + ' yil \n Payshanba vaqti bilan'
-
+                        let str = '🕰 Namoz vaqtlari!  ' + moment().tz("Asia/Tashkent").format('D') + ' - ' + month[moment().tz("Asia/Tashkent").format('MM') - 1] + '  ' + moment().tz("Asia/Tashkent").format('YYYY') + '-yil'
 
                         let i = 0
 
@@ -119,28 +124,28 @@ bot.start(async(ctx) => {
                         let th = ''
                         switch (ctx.message.text) {
 
-                            case 'Namoz vaqtlarini qayta yuklash':
+                            case '🔄Namoz vaqtlarini qayta yuklash':
                                 await bot.telegram.sendPhoto(ctx.from.id, photo)
                                 await bot.telegram.sendMessage(ctx.from.id, str);
 
                                 break;
 
-                            case 'Botni qayta ishga tushirish':
+                            case '⛏Botni qayta ishga tushirish':
                                 ctx.reply('/start ni bosing!')
                                 break;
-                            case 'Barcha botlar ro`yxati':
+                            case '📄Barcha botlar ro`yxati':
                                 ctx.replyWithHTML('<b><i>1.</i></b> Payshanba: <b>@Qalandarxona_bot</b>');
                                 break;
-                            case 'Botni to`xtatish':
+                            case '❌Botni to`xtatish':
                                 await User.deleteOne({ idNumber: ctx.from.id })
 
                                 ctx.replyWithHTML('<b><i>Bot to`xtatildi! endi bot sizga xabar yubormaydi.🥵</i> Botdan qayta foydalanish uchun uni qayta ishga tushiring /start!</b>')
                                 break;
 
-                            case 'Qalandarxona telegram guruhiga o`tish':
+                            case '🚀Qalandarxona telegram guruhiga o`tish':
                                 ctx.reply('https://t.me/Qalandarxona_Jome_Masjidi')
                                 break;
-                            case 'Statistika':
+                            case '📈Statistika':
                                 const Users = await User.find({})
                                     .select({ idNumber: 1 })
 
@@ -155,7 +160,7 @@ bot.start(async(ctx) => {
                                     .select({ idNumber: 1 })
                                 const Layks = await Layk.findById('61b5737108dd84ef1697f680')
 
-                                ctx.replyWithHTML(`Botdagi obunachilar: ${Users.length} \n\n Bugun qo\`shilgan obunachilar: ${UsersDay.length} ta \n Oxirgi 1 oyda qo\`shilgan obunachilar: ${25+parseInt(UsersMonth.length)} ta \n Bot ishga tushganiga ${Layks.layk} kun bo\`ldi \n\n @@Qalandarxona_bot statistikasi`)
+                                ctx.replyWithHTML(`👩‍👦‍👦Bot foydalanuvchilari: ${Users.length} \n\n 👩‍⚖️Bugun qo\`shilgan obunachilar: ${UsersDay.length} ta \n 👷Oxirgi 1 oyda qo\`shilgan obunachilar: ${25+parseInt(UsersMonth.length)} ta \n 🎰Bot ishga tushganiga ${Layks.layk} kun bo\`ldi \n\n @Qalandarxona_bot Statistikasi`)
                                 break;
 
 
@@ -163,10 +168,6 @@ bot.start(async(ctx) => {
 
 
                         }
-
-
-
-
 
                     }
                 }
@@ -182,7 +183,7 @@ bot.start(async(ctx) => {
                     await photourl.save()
                     photo = photourl.url
 
-                    ctx.reply('Rasm qabul qilindi!')
+                    await ctx.reply('Rasm qabul qilindi!')
                     ctx.replyWithHTML('<b>Rasmni botdan foydalanuvchilarga yuborishni aniq istaysizmi ?</b>', Markup.inlineKeyboard([
                         [Markup.button.callback('HA', 'photoSend')],
                         [Markup.button.callback('Yo`q', 'photoNosend')]
@@ -195,13 +196,25 @@ bot.start(async(ctx) => {
 
 
             bot.action('photoSend', async ctx => {
-                let str = 'Namoz vaqti o`zgardi! 📣🕙 ' + date.getDate() + ' - ' + month[date.getMonth()] + '  ' + date.getFullYear() + ' yil'
-                ctx.telegram.sendPhoto(process.env.chatID, photo)
-                ctx.telegram.sendMessage(process.env.chatID, str)
 
+                let str = '📣🕙 Namoz vaqti o`zgardi! \n ' + moment().tz("Asia/Tashkent").format('D') + ' - ' + month[moment().tz("Asia/Tashkent").format('MM') - 1] + '  ' + moment().tz("Asia/Tashkent").format('YYYY') + '-yil \n\n Botimizdan to`liq foydalanish uchun quyidagi havolaga o`ting \n @Qalandarxona_bot'
+                await ctx.telegram.sendPhoto(process.env.chatID, photo)
+                await ctx.telegram.sendPhoto(process.env.kanal_id, photo)
+                ctx.telegram.sendMessage(process.env.chatID, str)
+                ctx.telegram.sendMessage(process.env.kanal_id, str)
+                const Users = await User.find({})
+
+                .select({ idNumber: 1 })
+                for (let user of Users) {
+
+                    ctx.telegram.sendPhoto(user.idNumber, photo)
+                    ctx.telegram.sendMessage(user.idNumber, str)
+
+                }
                 ctx.reply('Namoz vaqti bot foydalanuvchilariga yuborildi!', Markup.inlineKeyboard([
                     [Markup.button.callback('Bosh menu', 'bosh_menu')]
                 ]))
+
 
 
 
@@ -260,17 +273,17 @@ bot.start(async(ctx) => {
                 ctx.replyWithHTML(`Assalomu alaykum ${ctx.from.first_name}! botimizga xush kelibsiz! \n  Endi sizni ushbu bot,  har safar jamoat namozi vaqtlari o\`zgargani haqida xabardor qiladi!`)
                 const photourl = await PhotoUrl.findById('61b5a7464f12aeb80d5ee100')
                 photo = photourl.url
-                let str = '🕓 Namoz vaqtlari!  ' + date.getDate() + ' - ' + month[date.getMonth()] + '  ' + date.getFullYear() + ' yil \n Payshanba vaqti bilan'
+                let str = '🕰 Namoz vaqtlari!  ' + moment().tz("Asia/Tashkent").format('D') + ' - ' + month[moment().tz("Asia/Tashkent").format('MM') - 1] + '  ' + moment().tz("Asia/Tashkent").format('YYYY') + '-yil'
                 await ctx.telegram.sendPhoto(ctx.from.id, photo)
                 if (key === 'client') {
                     ctx.telegram.sendMessage(ctx.from.id, str, {
                         reply_markup: {
                             keyboard: [
-                                ['Namoz vaqtlarini qayta yuklash'],
+                                ['🔄Namoz vaqtlarini qayta yuklash'],
 
-                                ['Statistika', 'Barcha botlar ro`yxati'],
-                                ['Botni to`xtatish', 'Botni qayta ishga tushirish'],
-                                ['Qalandarxona telegram guruhiga o`tish']
+                                ['📈Statistika', '📄Barcha botlar ro`yxati'],
+                                ['❌Botni to`xtatish', '⛏Botni qayta ishga tushirish'],
+                                ['🚀Qalandarxona telegram guruhiga o`tish']
 
 
                             ]
@@ -284,28 +297,28 @@ bot.start(async(ctx) => {
                         let th = ''
                         switch (ctx.message.text) {
 
-                            case 'Namoz vaqtlarini qayta yuklash':
+                            case '🔄Namoz vaqtlarini qayta yuklash':
                                 await bot.telegram.sendPhoto(ctx.from.id, photo)
                                 await bot.telegram.sendMessage(ctx.from.id, str);
 
                                 break;
 
-                            case 'Botni qayta ishga tushirish':
+                            case '⛏Botni qayta ishga tushirish':
                                 ctx.reply('/start ni bosing!')
                                 break;
-                            case 'Barcha botlar ro`yxati':
+                            case '📄Barcha botlar ro`yxati':
                                 ctx.replyWithHTML('<b><i>1.</i></b> Payshanba: <b>@Qalandarxona_bot</b>');
                                 break;
-                            case 'Botni to`xtatish':
+                            case '❌Botni to`xtatish':
                                 await User.deleteOne({ idNumber: ctx.from.id })
 
                                 ctx.replyWithHTML('<b><i>Bot to`xtatildi! endi bot sizga xabar yubormaydi.🥵</i> Botdan qayta foydalanish uchun uni qayta ishga tushiring /start!</b>')
                                 break;
 
-                            case 'Qalandarxona telegram guruhiga o`tish':
+                            case '🚀Qalandarxona telegram guruhiga o`tish':
                                 ctx.reply('https://t.me/Qalandarxona_Jome_Masjidi')
                                 break;
-                            case 'Statistika':
+                            case '📈Statistika':
                                 const Users = await User.find({})
                                     .select({ idNumber: 1 })
 
@@ -320,7 +333,7 @@ bot.start(async(ctx) => {
                                     .select({ idNumber: 1 })
                                 const Layks = await Layk.findById('61b5737108dd84ef1697f680')
 
-                                ctx.replyWithHTML(`Botdagi obunachilar: ${Users.length} \n\n Bugun qo\`shilgan obunachilar: ${UsersDay.length} ta \n Oxirgi 1 oyda qo\`shilgan obunachilar: ${25+parseInt(UsersMonth.length)} ta \n Bot ishga tushganiga ${Layks.layk} kun bo\`ldi \n\n @@Qalandarxona_bot statistikasi`)
+                                ctx.replyWithHTML(`👩‍👦‍👦Bot foydalanuvchilari: ${Users.length} \n\n 👩‍⚖️Bugun qo\`shilgan obunachilar: ${UsersDay.length} ta \n 👷Oxirgi 1 oyda qo\`shilgan obunachilar: ${25+parseInt(UsersMonth.length)} ta \n 🎰Bot ishga tushganiga ${Layks.layk} kun bo\`ldi \n\n @Qalandarxona_bot Statistikasi`)
                                 break;
 
 
@@ -377,17 +390,17 @@ bot.start(async(ctx) => {
         ctx.replyWithHTML(`Assalomu alaykum ${ctx.from.first_name}! botimizga xush kelibsiz! \n  Endi sizni ushbu bot,  har safar jamoat namozi vaqtlari o\`zgargani haqida xabardor qiladi!`)
         const photourl = await PhotoUrl.findById('61b5a7464f12aeb80d5ee100')
         photo = photourl.url
-        let str = '🕓 Namoz vaqtlari!  ' + date.getDate() + ' - ' + month[date.getMonth()] + '  ' + date.getFullYear() + ' yil \n Payshanba vaqti bilan'
+        let str = '🕰 Namoz vaqtlari!  ' + moment().tz("Asia/Tashkent").format('D') + ' - ' + month[moment().tz("Asia/Tashkent").format('MM') - 1] + '  ' + moment().tz("Asia/Tashkent").format('YYYY') + '-yil'
         await ctx.telegram.sendPhoto(ctx.from.id, photo)
 
         ctx.telegram.sendMessage(ctx.from.id, str, {
             reply_markup: {
                 keyboard: [
-                    ['Namoz vaqtlarini qayta yuklash'],
+                    ['🔄Namoz vaqtlarini qayta yuklash'],
 
-                    ['Statistika', 'Barcha botlar ro`yxati'],
-                    ['Botni to`xtatish', 'Botni qayta ishga tushirish'],
-                    ['Qalandarxona telegram guruhiga o`tish']
+                    ['📈Statistika', '📄Barcha botlar ro`yxati'],
+                    ['❌Botni to`xtatish', '⛏Botni qayta ishga tushirish'],
+                    ['🚀Qalandarxona telegram guruhiga o`tish']
 
 
                 ]
@@ -400,28 +413,28 @@ bot.start(async(ctx) => {
             let th = ''
             switch (ctx.message.text) {
 
-                case 'Namoz vaqtlarini qayta yuklash':
+                case '🔄Namoz vaqtlarini qayta yuklash':
                     await bot.telegram.sendPhoto(ctx.from.id, photo)
                     await bot.telegram.sendMessage(ctx.from.id, str);
 
                     break;
 
-                case 'Botni qayta ishga tushirish':
+                case '⛏Botni qayta ishga tushirish':
                     ctx.reply('/start ni bosing!')
                     break;
-                case 'Barcha botlar ro`yxati':
+                case '📄Barcha botlar ro`yxati':
                     ctx.replyWithHTML('<b><i>1.</i></b> Payshanba: <b>@Qalandarxona_bot</b>');
                     break;
-                case 'Botni to`xtatish':
+                case '❌Botni to`xtatish':
                     await User.deleteOne({ idNumber: ctx.from.id })
 
                     ctx.replyWithHTML('<b><i>Bot to`xtatildi! endi bot sizga xabar yubormaydi.🥵</i> Botdan qayta foydalanish uchun uni qayta ishga tushiring /start!</b>')
                     break;
 
-                case 'Qalandarxona telegram guruhiga o`tish':
+                case '🚀Qalandarxona telegram guruhiga o`tish':
                     ctx.reply('https://t.me/Qalandarxona_Jome_Masjidi')
                     break;
-                case 'Statistika':
+                case '📈Statistika':
                     const Users = await User.find({})
                         .select({ idNumber: 1 })
 
@@ -436,7 +449,7 @@ bot.start(async(ctx) => {
                         .select({ idNumber: 1 })
                     const Layks = await Layk.findById('61b5737108dd84ef1697f680')
 
-                    ctx.replyWithHTML(`Botdagi obunachilar: ${Users.length} \n\n Bugun qo\`shilgan obunachilar: ${UsersDay.length} ta \n Oxirgi 1 oyda qo\`shilgan obunachilar: ${25+parseInt(UsersMonth.length)} ta \n Bot ishga tushganiga ${Layks.layk} kun bo\`ldi \n\n @@Qalandarxona_bot statistikasi`)
+                    ctx.replyWithHTML(`👩‍👦‍👦Bot foydalanuvchilari: ${Users.length} \n\n 👩‍⚖️Bugun qo\`shilgan obunachilar: ${UsersDay.length} ta \n 👷Oxirgi 1 oyda qo\`shilgan obunachilar: ${25+parseInt(UsersMonth.length)} ta \n 🎰Bot ishga tushganiga ${Layks.layk} kun bo\`ldi \n\n @Qalandarxona_bot Statistikasi`)
                     break;
 
 
