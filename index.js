@@ -44,16 +44,16 @@ const bot = new Telegraf(process.env.BOT_TOKEN)
 
 
 
-console.log(moment().tz("Asia/Tashkent").format('YYYY'))
+
 
 
 const job = new CronJob('00 13 * * *', async() => {
     const photourl = await PhotoUrl.findById('61b5a7464f12aeb80d5ee100')
     photo = photourl.url
 
-    let str = '🕰 Namoz vaqtlari!  ' + moment().tz("Asia/Tashkent").format('D') + ' - ' + month[moment().tz("Asia/Tashkent").format('MM') - 1] + '  ' + moment().tz("Asia/Tashkent").format('YYYY') + '-yil \n\n Botimizdan to`liq foydalanish uchun quyidagi havolaga kiring \n @Qalandarxona_bot '
-    await bot.telegram.sendPhoto(process.env.chatID, photo)
-    await bot.telegram.sendMessage(process.env.chatID, str)
+    let stra = '🕰 Namoz vaqtlari!  ' + moment().tz("Asia/Tashkent").format('D') + ' - ' + month[moment().tz("Asia/Tashkent").format('MM') - 1] + '  ' + moment().tz("Asia/Tashkent").format('YYYY') + '-yil \n\n Botimizdan to`liq foydalanish uchun quyidagi havolaga kiring \n @Qalandarxona_bot '
+    await bot.telegram.sendPhoto(process.env.guruh_id, photo)
+    await bot.telegram.sendMessage(process.env.guruh_id, stra)
 }, null, true)
 job.start()
 
@@ -203,10 +203,8 @@ bot.start(async(ctx) => {
             bot.action('photoSend', async ctx => {
 
                 let str = '📣🕙 Namoz vaqti o`zgardi! \n ' + moment().tz("Asia/Tashkent").format('D') + ' - ' + month[moment().tz("Asia/Tashkent").format('MM') - 1] + '  ' + moment().tz("Asia/Tashkent").format('YYYY') + '-yil \n\n Botimizdan to`liq foydalanish uchun quyidagi havolaga o`ting \n @Qalandarxona_bot'
-                await ctx.telegram.sendPhoto(process.env.chatID, photo)
-                await ctx.telegram.sendPhoto(process.env.chatID, photo)
-                ctx.telegram.sendMessage(process.env.chatID, str)
-                ctx.telegram.sendMessage(process.env.chatID, str)
+
+
                 const Users = await User.find({})
 
                 .select({ idNumber: 1 })
@@ -220,14 +218,12 @@ bot.start(async(ctx) => {
                     })
 
                 }
-                await ctx.telegram.sendMessage(process.env.kanal_id, photo).catch((err) => {
-
-                })
                 await ctx.telegram.sendMessage(process.env.guruh_id, photo).catch((err) => {
 
                 })
-                ctx.telegram.sendMessage(process.env.kanal_id, str).catch((err) => {})
                 ctx.telegram.sendMessage(process.env.guruh_id, str).catch((err) => {})
+
+
                 ctx.reply('Namoz vaqti bot foydalanuvchilariga yuborildi!', Markup.inlineKeyboard([
                     [Markup.button.callback('Bosh menu', 'bosh_menu')]
                 ]))
@@ -486,124 +482,5 @@ bot.start(async(ctx) => {
 
 })
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// bot.command(process.env.admin_command, async(ctx) => {
-
-
-
-//     elon = true
-//     await ctx.replyWithHTML(`<b>${ctx.from.first_name}</b> (Admin) hush kelibsiz! yo\`nalishni tanlang.`, Markup.inlineKeyboard([
-//         [Markup.button.callback('Namoz vaqtlari', 'namoz'), Markup.button.callback('E`lon', 'elon')]
-//     ]))
-
-
-
-
-
-
-
-// })
-// async function namoz(ctx) {
-
-
-// }
-
-// bot.action('namoz', async(ctx) => {
-//     ctx.reply('Namoz vaqtlari o`zgargan bo`lsa, uning rasmini menga yuboring!')
-//     console.log('photo1')
-//     bot.on('photo', async ctx => {
-//         console.log('photo2')
-//         if (parseInt(ctx.from.id) === parseInt(process.env.admin_J) || parseInt(ctx.from.id) === parseInt(process.env.admin_G)) {
-//             const photourl = await PhotoUrl.findById('61b5a7464f12aeb80d5ee100')
-//             console.log('photo3')
-//             photourl.url = ctx.message.photo[0].file_id
-//             await photourl.save()
-//             photo = photourl.url
-
-//             ctx.reply('Rasm qabul qilindi!')
-//             ctx.replyWithHTML('<b>Rasmni botdan foydalanuvchilarga yuborishni aniq istaysizmi ?</b>', Markup.inlineKeyboard([
-//                 [Markup.button.callback('HA', 'photoSend')],
-//                 [Markup.button.callback('Yo`q', 'photoNosend')]
-//             ]))
-//         }
-//     })
-
-//     await ctx.answerCbQuery()
-// })
-
-// bot.action('photoNosend', async ctx => {
-//     ctx.reply('Namoz vaqtlari o`zgargan bo`lsa, uning rasmini menga yuboring!')
-// })
-// bot.action('elon', (ctx) => {
-
-//     if (elon === true) {
-//         ctx.reply('E`lonni yozing!')
-//         bot.on('message', async ctx => {
-//             console.log(ctx.from.id)
-//             if (parseInt(ctx.from.id) === parseInt(process.env.admin_J) || parseInt(ctx.from.id) === parseInt(process.env.admin_G)) {
-//                  ctx.telegram.sendMessage(process.env.chatID, ctx.message.text)
-//                 ctx.reply('E`lonlar tugagan bo`lsa boshqa bo`limga o`ting', Markup.inlineKeyboard([
-//                     [Markup.button.callback('E`lonlar tugagan bo`lsa bosh menu ga o`ting', 'bmenu')]
-//                 ]))
-//             }
-
-//         })
-//         ctx.answerCbQuery()
-//     }
-
-// })
-// bot.action('photoSend', async(ctx) => {
-
-// const Users = await User.find({
-//})
-//
-//     .select({ idNumber: 1 })
-// for (let user of Users) {
-//     let str = 'Namoz vaqti o`zgardi! 📣🕙 ' + date.getDate() + ' - ' + month[date.getMonth()] + '  ' + date.getFullYear() + ' yil'
-
-//     ctx.telegram.sendPhoto(user.idNumber, photo)
-//     ctx.telegram.sendMessage(user.idNumber, str)
-
-// }
-//     const photourl = await PhotoUrl.findById('61b5a7464f12aeb80d5ee100')
-//     photo = photourl.url
-
-//     let str = date.getDate() + ' - ' + month[date.getMonth()] + '  ' + date.getFullYear() + 'Yil' +
-//         '\n\n' + 'Namoz vaqtlari o`zgardi!  📣🕙 \n\n ' + ' Agar Botimiz sizni har safar namoz vaqtlari o`zgargani haqida o`zingizga xabar berishini istasangiz botga kiring 👇 \n\n @Qalandarxona_bot'
-
-//     ctx.telegram.sendPhoto(process.env.chatID, photo)
-//     ctx.telegram.sendMessage(process.env.chatID, str)
-
-//     ctx.reply('Rasm, bot foydalanuvchilariga yuborildi!')
-//     bot.on('photo', namoz)
-
-//     ctx.reply('Bosh menuga qayting', Markup.inlineKeyboard([
-//         [Markup.button.callback('Bosh menu', 'bmenu')]
-//     ]))
-//     await ctx.answerCbQuery()
-
-// })
-
-// bot.action('bmenu', async ctx => {
-//     elon = false
-//     ctx.reply('E`lon yuborish tugadi. bosh menuga o`tish uchun adminlik kodini kiriting')
-// })
 
 bot.launch()
