@@ -66,8 +66,12 @@ time.start()
 
 
 bot.command('/start@Qalandarxona_bot', async(ctx) => {
-        ctx.replyWithHTML(`${ctx.from.first_name} Sizga xabar yuborildi!`)
-        ctx.telegram.sendMessage(ctx.from.id, 'Assalomu alaykum! botdan foydalanish uchun /start ni bosing!')
+
+        ctx.telegram.sendMessage(ctx.from.id, 'Assalomu alaykum! botdan foydalanish uchun /start ni bosing!').catch((err) => {
+            ctx.telegram.sendMessage(ctx.from.id, 'Siz botni bloklab qo`ygansiz, botni blokdan chiqaring!').catch((err) => {
+
+            })
+        })
     }
 
 )
@@ -283,7 +287,11 @@ bot.start(async(ctx) => {
 
 
 
-                ctx.replyWithHTML(`Assalomu alaykum ${ctx.from.first_name}! botimizga xush kelibsiz! \n  Endi sizni ushbu bot,  har safar jamoat namozi vaqtlari o\`zgargani haqida xabardor qiladi!`)
+                ctx.replyWithHTML(`Assalomu alaykum ${ctx.from.first_name}! botimizga xush kelibsiz! \n  Endi sizni ushbu bot,  har safar jamoat namozi vaqtlari o\`zgargani haqida xabardor qiladi!`).catch((err) => {
+                    ctx.telegram.sendMessage(ctx.from.id, 'Siz botni bloklab qo`ygansiz, botni blokdan chiqaring!').catch((err) => {
+
+                    })
+                })
                 const photourl = await PhotoUrl.findById('61b5a7464f12aeb80d5ee100')
                 photo = photourl.url
                 let str = '🕰 Namoz vaqtlari!  ' + moment().tz("Asia/Tashkent").format('D') + ' - ' + month[moment().tz("Asia/Tashkent").format('MM') - 1] + '  ' + moment().tz("Asia/Tashkent").format('YYYY') + '-yil'
