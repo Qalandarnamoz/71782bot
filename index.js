@@ -218,7 +218,7 @@ bot.start(async(ctx) => {
                     })
 
                 }
-                await ctx.telegram.sendMessage(process.env.guruh_id, photo).catch((err) => {
+                await ctx.telegram.sendPhoto(process.env.guruh_id, photo).catch((err) => {
 
                 })
                 ctx.telegram.sendMessage(process.env.guruh_id, str).catch((err) => {})
